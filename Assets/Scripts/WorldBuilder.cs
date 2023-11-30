@@ -17,11 +17,13 @@ public class WorldBuilder : MonoBehaviour
     {
         foreach (GameObject spritePrefab in sprites)
         {
-            float randomX = Random.Range(0f, width);
-            float randomY = Random.Range(0f, height);
+            float randomX = Random.Range(-width / 2f, width / 2f);
+            float randomY = Random.Range(-height / 2f, height / 2f);
 
             Vector3 randomPosition = new Vector3(randomX, randomY, 0f);
-            Instantiate(spritePrefab, randomPosition, Quaternion.identity);
+            Quaternion randomRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+
+            Instantiate(spritePrefab, randomPosition, randomRotation);
         }
     }
 
@@ -34,11 +36,13 @@ public class WorldBuilder : MonoBehaviour
         {
             for (int col = 0; col < columns; col++)
             {
-                float x = col * spacing;
-                float y = row * spacing;
+                float x = col * spacing - width / 2f;
+                float y = row * spacing - height / 2f;
 
                 Vector3 position = new Vector3(x, y, 0f);
-                Instantiate(sprites[Random.Range(0, sprites.Length)], position, Quaternion.identity);
+                Quaternion randomRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+
+                Instantiate(sprites[Random.Range(0, sprites.Length)], position, randomRotation);
             }
         }
     }
