@@ -4,17 +4,17 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance = null;
+
     private BULLYTInput input = null;
 
     private Vector2 moveVector;
 
     private bool attackPressed = false;
 
-    public float stepSize = 0.1f;
-
-    public float speed = 1;
-    public float acceleration = 2;
-    Vector2 currentVelocity;
+    public float speed = 5f; // Adjusted speed for better movement feel
+    public float acceleration = 10f;
+    private Vector2 currentVelocity;
 
     public AudioSource attackAudio;
 
@@ -25,7 +25,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        input = new();
+        if (Instance == null) Instance = this;
+
+        input = new BULLYTInput();
 
         rigidBody2D = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -53,18 +55,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext value)
     {
-        moveVector = value.ReadValue<Vector2>();
-
-        if (Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y))
-        {
-            // x has a greater absolute value, so set y to 0
-            moveVector = new Vector2(moveVector.x, 0);
-        }
-        else
-        {
-            // y has a greater absolute value, so set x to 0
-            moveVector = new Vector2(0, moveVector.y);
-        }
+        moveVector = value.ReadValue<Vector2>().normalized; // Normalize for consistent speed in all directions
     }
 
     private void OnMoveCancelled(InputAction.CallbackContext value) { moveVector = Vector2.zero; }
@@ -78,13 +69,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // if (HealthController.Instance.m_playerLost)
-        //     return;
-
         CharacterControl();
     }
-
-    #region NEW Input System
 
     void CharacterControl()
     {
@@ -93,36 +79,16 @@ public class PlayerController : MonoBehaviour
 
         if (attackPressed)
         {
-            // RumbleManager.Instance.RumblePulse();
             isAttacking = true;
             attackAudio.Play();
-
-            // if (animator)
-            // {
-            //     animator.SetTrigger("Attack");
-            // }
-
             StartCoroutine(ResetAttack());
         }
 
-        Vector2 moveData = moveVector * stepSize;
+        Vector2 moveData = moveVector * speed;
 
-        if (moveData == Vector2.zero)
-        {
-            Debug.Log("ZERO - ");
-            velocity = 0;
-        }
-        else
-        {
-            Debug.Log("NMON  ZERO - ");
-
-            velocity = Mathf.Clamp01(velocity + Time.deltaTime * acceleration);
-            rigidBody2D.velocity = Vector2.SmoothDamp(rigidBody2D.velocity, moveData * speed, ref currentVelocity, acceleration, speed);
-            spriteRenderer.flipX = rigidBody2D.velocity.x >= 0 ? true : false;
-        }
+        // Update the player's position using Rigidbody2D
+        rigidBody2D.MovePosition(rigidBody2D.position + moveData * Time.fixedDeltaTime);
     }
-
-    #endregion
 
     IEnumerator ResetAttack()
     {
