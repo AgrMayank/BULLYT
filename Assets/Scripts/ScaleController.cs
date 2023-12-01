@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class ScaleController : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class ScaleController : MonoBehaviour
     private AudioSource audioSource;
 
     // Timer variables
-    private float timer = 5f;
+    private float timer = 3f;
     private bool timerActive = false;
 
     private void Awake()
@@ -45,6 +46,25 @@ public class ScaleController : MonoBehaviour
         {
             UpdateSliderValue();
         }
+
+        StartCoroutine(IncreaseTimeScaleOverTime());
+    }
+
+    IEnumerator IncreaseTimeScaleOverTime()
+    {
+        float elapsedTime = 0f;
+        float initialTimeScale = Time.timeScale;
+
+        while (elapsedTime < 120f)
+        {
+            float newTimeScale = Mathf.Lerp(initialTimeScale, 2f, elapsedTime / 120f);
+            Time.timeScale = newTimeScale;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        Time.timeScale = 2f; // Ensure we reach the exact target at the end
     }
 
     private void Update()
@@ -165,8 +185,8 @@ public class ScaleController : MonoBehaviour
 
     void ResetTimer()
     {
-        // Reset the timer to 5 seconds
-        timer = 5f;
+        // Reset the timer to 3 seconds
+        timer = 3f;
         timerActive = true;
     }
 }
