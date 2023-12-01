@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,9 +14,15 @@ public class ScaleController : MonoBehaviour
     public float minValue = 1f;
     public float maxValue = 10f;
 
+    public GameObject gameOverUI;
+    public TMP_Text scoreText;
+
+    private int enemiesHit = 0;
+
     private void Awake()
     {
         isGameOver = false;
+        enemiesHit = 0;
 
         if (Instance == null) Instance = this;
     }
@@ -33,6 +40,10 @@ public class ScaleController : MonoBehaviour
 
     public void IncreaseOrthographicSize()
     {
+        if (isGameOver) return;
+
+        enemiesHit += 1;
+
         if (mainCamera != null)
         {
             mainCamera.orthographicSize += 1;
@@ -57,6 +68,10 @@ public class ScaleController : MonoBehaviour
 
     public void DecreaseOrthographicSize()
     {
+        if (isGameOver) return;
+
+        enemiesHit += 1;
+
         if (mainCamera != null)
         {
             mainCamera.orthographicSize -= 1;
@@ -81,11 +96,8 @@ public class ScaleController : MonoBehaviour
 
     void UpdateSliderValue()
     {
-        // Calculate the proportional value for the slider
-        float proportionalValue = Mathf.InverseLerp(minValue, maxValue, mainCamera.orthographicSize);
-
         // Set the slider value
-        slider.value = proportionalValue;
+        slider.value = mainCamera.orthographicSize;
     }
 
     void GameOver()
@@ -94,5 +106,8 @@ public class ScaleController : MonoBehaviour
         Debug.Log("Game Over");
 
         isGameOver = true;
+
+        gameOverUI.SetActive(true);
+        scoreText.text = "<size=192>" + enemiesHit + "</size>/nATOMS FIXED!!!";
     }
 }

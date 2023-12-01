@@ -9,8 +9,6 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance = null;
 
-    private BULLYTInput input = null;
-
     public GameObject m_fadeStart;
 
     public static string levelToLoad;
@@ -25,9 +23,7 @@ public class LevelManager : MonoBehaviour
         }
 
         Application.targetFrameRate = 120;
-        Time.timeScale = 2;
-
-        if (SceneManager.GetActiveScene().buildIndex == 0) input = new();
+        Time.timeScale = 1;
     }
 
     private void Start()
@@ -35,30 +31,10 @@ public class LevelManager : MonoBehaviour
         GC.Collect();
     }
 
-    private void OnEnable()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
-        {
-            input.Enable();
-            input.Player.AttackSelect.performed += OnAttack;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
-        {
-            input.Player.AttackSelect.performed -= OnAttack;
-        }
-    }
-
-    private void OnAttack(InputAction.CallbackContext value)
-    {
-        LoadLevel("02 Game");
-    }
-
     public void LoadNextLevel()
     {
+        Debug.Log("PRESSED!!!");
+
         LoadLevel("", 1, SceneManager.GetActiveScene().buildIndex + 1);
     }
 

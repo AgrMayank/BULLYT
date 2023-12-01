@@ -47,12 +47,14 @@ public class LightController : MonoBehaviour
 
                 if (isPositive == true)
                 {
-                    ScaleController.Instance.IncreaseOrthographicSize();
+                    ScaleController.Instance.DecreaseOrthographicSize();
                 }
                 else
                 {
-                    ScaleController.Instance.DecreaseOrthographicSize();
+                    ScaleController.Instance.IncreaseOrthographicSize();
                 }
+
+                Destroy(gameObject);
             }
         }
     }
