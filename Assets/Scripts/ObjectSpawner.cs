@@ -33,8 +33,8 @@ public class ObjectSpawner : MonoBehaviour
                 Destroy(spawnedObject, 2f);
             }
 
-            // Wait for 1 second before the next instantiation
-            yield return new WaitForSeconds(1f);
+            // Wait for 0.5 second before the next instantiation
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

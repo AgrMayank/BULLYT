@@ -19,6 +19,8 @@ public class ScaleController : MonoBehaviour
 
     private int enemiesHit = 0;
 
+    private AudioSource audioSource;
+
     private void Awake()
     {
         isGameOver = false;
@@ -30,6 +32,7 @@ public class ScaleController : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+        audioSource = GetComponent<AudioSource>();
 
         // Initialize the slider value based on the initial orthographic size
         if (mainCamera != null && slider != null)
@@ -98,6 +101,8 @@ public class ScaleController : MonoBehaviour
     {
         // Set the slider value
         slider.value = mainCamera.orthographicSize;
+
+        audioSource.Play();
     }
 
     void GameOver()
